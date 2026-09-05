@@ -1,0 +1,7 @@
+# Native usenet downloader binary
+downloader-native-usenet
+cmd/module/module
+
+# Go
+*.test
+*.out

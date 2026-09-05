@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package muxcore.usenet.v1;
+
+option go_package = "github.com/Muxcore-Media/downloader-native-usenet/proto/gen/muxcore/usenet/v1;usenetv1";
+
+// UsenetDownloaderService is the NZB/usenet counterpart to torrent downloaders.
+service UsenetDownloaderService {
+  rpc AddNZB(AddNZBRequest) returns (AddNZBResponse);
+  rpc ListQueue(ListQueueRequest) returns (ListQueueResponse);
+  rpc Pause(PauseRequest) returns (PauseResponse);
+  rpc Resume(ResumeRequest) returns (ResumeResponse);
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+  rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse);
+  rpc GetCapabilities(GetCapabilitiesRequest) returns (GetCapabilitiesResponse);
+}
+
+message AddNZBRequest {
+  // nzb_url is an HTTP(S) URL to an NZB file (SABnzbd mode=addurl).
+  string nzb_url = 1;
+  string name = 2;
+  string category = 3;
+  bool paused = 4;
+}
+
+message AddNZBResponse {
+  string job_id = 1;
+  string name = 2;
+}
+
+message ListQueueRequest {
+  string category = 1;
+}
+
+message QueueItem {
+  string id = 1;
+  string name = 2;
+  string status = 3;
+  string category = 4;
+  double progress = 5;
+  int64 size = 6;
+  int64 remaining = 7;
+}
+
+message ListQueueResponse {
+  repeated QueueItem items = 1;
+}
+
+message PauseRequest {
+  // empty id pauses the whole queue (SABnzbd mode=pause)
+  string id = 1;
+}
+
+message PauseResponse {
+  bool success = 1;
+}
+
+message ResumeRequest {
+  string id = 1;
+}
+
+message ResumeResponse {
+  bool success = 1;
+}
+
+message DeleteRequest {
+  string id = 1;
+  bool delete_files = 2;
+}
+
+message DeleteResponse {
+  bool success = 1;
+}
+
+message HistoryItem {
+  string id = 1;
+  string name = 2;
+  string status = 3;
+  string category = 4;
+  string storage = 5;
+}
+
+message GetHistoryRequest {
+  int32 limit = 1;
+}
+
+message GetHistoryResponse {
+  repeated HistoryItem items = 1;
+}
+
+message GetCapabilitiesRequest {}
+
+message GetCapabilitiesResponse {
+  bool supports_categories = 1;
+  bool supports_pausing = 2;
+  repeated string supported_protocols = 3;
+  string backend = 4;
+}
