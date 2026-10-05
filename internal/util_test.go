@@ -36,6 +36,13 @@ func TestFetchNZBRejectsMetadataHost(t *testing.T) {
 	}
 }
 
+func TestFetchNZBRejectsMetadataWhenPrivateAllowed(t *testing.T) {
+	_, err := fetchNZB(context.Background(), nil, "http://169.254.169.254/latest/meta-data", true)
+	if err == nil {
+		t.Fatal("expected metadata host blocked even when private URLs are allowed")
+	}
+}
+
 func TestFetchNZBOkViaHTTPtest(t *testing.T) {
 	const body = `<?xml version="1.0"?><nzb xmlns="http://www.newzbin.com/DTD/nzb/nzb-1.1.dtd"></nzb>`
 	srv := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {

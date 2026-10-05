@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/Muxcore-Media/core/pkg/contracts"
 )
@@ -173,7 +172,7 @@ func fetchNZB(ctx context.Context, client *http.Client, nzbURL string, allowPriv
 		return nil, err
 	}
 	if client == nil {
-		client = &http.Client{Timeout: 2 * time.Minute}
+		client = newGuardedClient(allowPrivate)
 	}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, nzbURL, nil)
 	if err != nil {

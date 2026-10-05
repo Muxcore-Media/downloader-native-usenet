@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Security
+- NZB fetches use netguard. Allowing private hosts no longer skips the metadata and link-local checks. The strict profile still refuses private and loopback (NFR-SEC-009).
+
 ## [0.2.4] - 2026-10-05
 
 

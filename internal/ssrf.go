@@ -4,27 +4,42 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"net/url"
+	"net/http"
 	"strings"
+	"time"
+
+	"github.com/Muxcore-Media/core/sdk/go/module/netguard"
 )
 
+// nzbGuardOptions is UserURL when private hosts are refused, and Integration
+// when the operator opts into LAN NZB URLs. Integration still refuses
+// link-local and cloud metadata. The old allowPrivate path returned before
+// those checks.
+func nzbGuardOptions(allowPrivate bool) (netguard.Profile, netguard.Options) {
+	opts := netguard.Options{Timeout: 2 * time.Minute}
+	if !allowPrivate {
+		return netguard.UserURL, opts
+	}
+	opts.AllowPrivate = true
+	opts.AllowLoopback = true
+	return netguard.Integration, opts
+}
+
+func newGuardedClient(allowPrivate bool) *http.Client {
+	profile, opts := nzbGuardOptions(allowPrivate)
+	return netguard.NewClient(profile, opts)
+}
+
 func classifyNZBURL(raw string, allowPrivate bool) error {
-	u, err := url.Parse(strings.TrimSpace(raw))
-	if err != nil {
-		return fmt.Errorf("invalid nzb url: %w", err)
-	}
-	switch strings.ToLower(u.Scheme) {
-	case "http", "https":
-	default:
-		return fmt.Errorf("unsupported nzb url scheme %q (want http or https)", u.Scheme)
-	}
-	if u.Host == "" {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
 		return fmt.Errorf("nzb url missing host")
 	}
-	if allowPrivate {
-		return nil
+	profile, opts := nzbGuardOptions(allowPrivate)
+	if err := netguard.ValidateURL(raw, profile, opts); err != nil {
+		return fmt.Errorf("nzb url: %w", err)
 	}
-	return blockFetchHost(context.Background(), u.Hostname())
+	return nil
 }
 
 func blockFetchHost(ctx context.Context, host string) error {
