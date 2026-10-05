@@ -43,7 +43,7 @@ func (e *nntpEngine) NZBHealthCheck(ctx context.Context, nzbData []byte) (*NZBHe
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	report := &NZBHealthReport{Files: make([]FileHealth, 0, len(doc.Files))}
 	for i, f := range doc.Files {

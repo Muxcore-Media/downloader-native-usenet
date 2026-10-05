@@ -189,8 +189,11 @@ func (m *Module) Start(ctx context.Context) error {
 	usenetv1.RegisterUsenetDownloaderServiceServer(m.grpcSrv, &usenetServer{m: m})
 	modulesdk.RegisterSettings(m.grpcSrv, m.id, m)
 
+	m.cfgMu.RLock()
+	engine := m.engine
+	m.cfgMu.RUnlock()
 	go func() {
-		slog.Info("native usenet gRPC listening", "addr", m.grpcAddr, "engine", m.engine)
+		slog.Info("native usenet gRPC listening", "addr", m.grpcAddr, "engine", engine)
 		if err := m.grpcSrv.Serve(lis); err != nil {
 			slog.Error("gRPC serve", "error", err)
 		}
@@ -227,7 +230,7 @@ func (m *Module) Stop(ctx context.Context) error {
 		_ = m.httpSrv.Shutdown(ctx)
 	}
 	if m.mc != nil {
-		m.mc.Close()
+		_ = m.mc.Close()
 	}
 	return nil
 }
@@ -267,7 +270,7 @@ func (m *Module) Health(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		conn.Close()
+		_ = conn.Close()
 	}
 	return nil
 }

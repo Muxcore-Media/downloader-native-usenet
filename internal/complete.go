@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Muxcore-Media/downloader-native-usenet/internal/postproc"
 )
@@ -36,12 +35,4 @@ func failJob(j *job, err error) error {
 	}
 	j.markFailed(err.Error())
 	return err
-}
-
-func wrapFail(j *job, msg string, err error) error {
-	if err == nil {
-		return nil
-	}
-	j.markFailed(fmt.Sprintf("%s: %v", msg, err))
-	return fmt.Errorf("%s: %w", msg, err)
 }

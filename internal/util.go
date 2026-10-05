@@ -168,12 +168,6 @@ func (j *job) verificationSnapshot() (expected, downloaded int, status string) {
 	return j.articlesExpected, j.articlesDownloaded, j.verificationStatus
 }
 
-func (j *job) storagePath() string {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-	return j.storage
-}
-
 func fetchNZB(ctx context.Context, client *http.Client, nzbURL string, allowPrivate bool) ([]byte, error) {
 	if err := classifyNZBURL(nzbURL, allowPrivate); err != nil {
 		return nil, err
@@ -189,7 +183,7 @@ func fetchNZB(ctx context.Context, client *http.Client, nzbURL string, allowPriv
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode >= 300 {
 		body, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
 		return nil, fmt.Errorf("fetch nzb: HTTP %d: %s", resp.StatusCode, strings.TrimSpace(string(body)))
@@ -258,17 +252,4 @@ func filesFromStorage(storage string) []contracts.DownloadEventFile {
 		return nil
 	})
 	return files
-}
-
-func pathContainedIn(base, target string) bool {
-	base = filepath.Clean(base)
-	target = filepath.Clean(target)
-	rel, err := filepath.Rel(base, target)
-	if err != nil {
-		return false
-	}
-	if rel == ".." || strings.HasPrefix(rel, ".."+string(os.PathSeparator)) {
-		return false
-	}
-	return true
 }

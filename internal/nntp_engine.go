@@ -97,7 +97,7 @@ func (e *nntpEngine) dial(ctx context.Context) (*nntp.Conn, error) {
 	}
 	if e.cfg.User != "" {
 		if err := conn.Authenticate(e.cfg.User, e.cfg.Pass); err != nil {
-			conn.Close()
+			_ = conn.Close()
 			return nil, fmt.Errorf("nntp auth: %w", err)
 		}
 	}
@@ -132,7 +132,7 @@ func (e *nntpEngine) RunJob(ctx context.Context, j *job, nzbData []byte, destDir
 		j.markFailed(err.Error())
 		return err
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	_, name, category, _, _, _, _ := j.queueView()
 	outRoot := jobDir(destDir, category, name)
@@ -206,7 +206,11 @@ func downloadFileStreaming(ctx context.Context, af nzb.ArticleFetcher, f nzb.Fil
 	if err != nil {
 		return "", 0, 0, 0, err
 	}
-	defer out.Close()
+	defer func() {
+		if cerr := out.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
 
 	for _, seg := range segs {
 		if err := ctx.Err(); err != nil {

@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"sort"
 	"strings"
 )
 
@@ -128,7 +127,7 @@ func extractZip(archive, outDir string) error {
 	if err != nil {
 		return fmt.Errorf("open zip: %w", err)
 	}
-	defer r.Close()
+	defer func() { _ = r.Close() }()
 	for _, f := range r.File {
 		if err := extractZipFile(f, outDir); err != nil {
 			return err
@@ -159,14 +158,16 @@ func extractZipFile(f *zip.File, outDir string) error {
 	if err != nil {
 		return err
 	}
-	defer rc.Close()
+	defer func() { _ = rc.Close() }()
 	out, err := os.OpenFile(dest, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, f.Mode())
 	if err != nil {
 		return err
 	}
-	defer out.Close()
-	_, err = io.Copy(out, rc)
-	return err
+	if _, err = io.Copy(out, rc); err != nil {
+		_ = out.Close()
+		return err
+	}
+	return out.Close()
 }
 
 func containedIn(base, target string) bool {
@@ -241,11 +242,4 @@ func runCmd(ctx context.Context, bin string, args ...string) error {
 		return fmt.Errorf("%s %s: %w: %s", bin, strings.Join(args, " "), err, strings.TrimSpace(string(out)))
 	}
 	return nil
-}
-
-// sortRARParts orders multi-part rar paths (utility for future direct-read).
-func sortRARParts(paths []string) {
-	sort.Slice(paths, func(i, j int) bool {
-		return strings.ToLower(paths[i]) < strings.ToLower(paths[j])
-	})
 }
