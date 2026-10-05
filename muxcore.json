@@ -1,7 +1,7 @@
 {
   "id": "downloader-native-usenet",
   "name": "Native Usenet Downloader",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Native NZB/usenet engine with NNTP download and yEnc decode",
   "roles": [
     "downloader",

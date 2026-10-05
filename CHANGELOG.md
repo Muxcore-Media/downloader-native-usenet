@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.3] - 2026-10-05
+
+### Changed
+- Built on core v0.6.14 / sdk/go/module v0.6.4: unregisters on shutdown and re-registers after core restarts (ADR-0022).
+
 ## [0.2.2] - 2026-10-05
 
 
