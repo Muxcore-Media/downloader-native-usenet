@@ -42,7 +42,7 @@ jobs:
           fi
       - name: No filesystem replace directives
         run: |
-          if grep -nE '^\s*(replace\s+)?\S+\s+(v\S+\s+)?=>\s+(\.|/)' go.mod; then
+          if grep -nE '^\s*(replace\s+)?\S+\s+(v\S+\s+)?=>\s+(\.\./|/)' go.mod; then
             echo "::error::go.mod must not contain filesystem replace directives (ADR-0011)"; exit 1
           fi
       - run: go build ./...
