@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0] - 2026-10-05
+
+### Changed
+- CI runs on GitHub-hosted runners from the umbrella template; retired-origin workflows removed.
+- Dependencies resolve from published GitHub tags (no filesystem `replace`); requires core v0.6.0.
+
 ## v0.2.0 — 2026-08-21
 
 - SABnzbd parity post-processing: PAR2 verify/repair (`par2engine`), archive unpack (ZIP/RAR/7z)

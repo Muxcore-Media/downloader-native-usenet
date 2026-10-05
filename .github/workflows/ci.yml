@@ -1,0 +1,74 @@
+# Generated from Muxcore-Media/umbrella scripts/ci-templates/go-module-ci.yml
+# by scripts/sync-ci.sh — edit the template, not this copy (ADR-0003).
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore: ["**.md", "docs/**", "LICENSE"]
+  pull_request:
+    paths-ignore: ["**.md", "docs/**", "LICENSE"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  GOPRIVATE: github.com/Muxcore-Media/*
+  GONOSUMDB: github.com/Muxcore-Media/*
+  GOFLAGS: -mod=readonly
+
+jobs:
+  test:
+    name: Build, vet, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Private module access
+        env:
+          TOKEN: ${{ secrets.MUXCORE_CI_TOKEN }}
+        run: |
+          if [ -n "$TOKEN" ]; then
+            git config --global url."https://x-access-token:${TOKEN}@github.com/Muxcore-Media/".insteadOf "https://github.com/Muxcore-Media/"
+          fi
+      - name: No filesystem replace directives
+        run: |
+          if grep -nE '^\s*(replace\s+)?\S+\s+(v\S+\s+)?=>\s+(\.|/)' go.mod; then
+            echo "::error::go.mod must not contain filesystem replace directives (ADR-0011)"; exit 1
+          fi
+      - run: go build ./...
+      - run: go vet ./...
+      - run: go test -race -count=1 -timeout 15m ./...
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Non-blocking until the module's lint debt is cleared (roadmap T-M1-11);
+    # set repository variable LINT_BLOCKING=true to make it a gate.
+    continue-on-error: ${{ vars.LINT_BLOCKING != 'true' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Private module access
+        env:
+          TOKEN: ${{ secrets.MUXCORE_CI_TOKEN }}
+        run: |
+          if [ -n "$TOKEN" ]; then
+            git config --global url."https://x-access-token:${TOKEN}@github.com/Muxcore-Media/".insteadOf "https://github.com/Muxcore-Media/"
+          fi
+      - uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.12.2
