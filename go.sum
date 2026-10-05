@@ -1,11 +1,11 @@
-github.com/Muxcore-Media/core v0.6.0 h1:hbE+l4de+xEiKLvLn3EgjKXEE57n98+Vvyzi8J1dQp4=
-github.com/Muxcore-Media/core v0.6.0/go.mod h1:lZ6tuCEjwmXI0zd6lhKOkm/qpB1Js4rrB+Bs9lCNZjA=
+github.com/Muxcore-Media/core v0.6.12 h1:IsXr8TaSLlMJIzILxCpWssTbuBvTX4KoiqTMypRpq9o=
+github.com/Muxcore-Media/core v0.6.12/go.mod h1:lZ6tuCEjwmXI0zd6lhKOkm/qpB1Js4rrB+Bs9lCNZjA=
 github.com/Muxcore-Media/core/pkg/contracts v0.6.0 h1:NNaPjtDT81ESDDSMiEk2LGn6XsIFz+pKhXrr1TeSH+0=
 github.com/Muxcore-Media/core/pkg/contracts v0.6.0/go.mod h1:riu1DrsCAJ9AJf9uf8IG1W8nYzcQ+Y7HiT6okz7Lmck=
-github.com/Muxcore-Media/core/sdk/go/client v0.6.0 h1:kb/FfuN9DWZMqSZlHO8z28+so3fpmHNO8obCGdmGvWg=
-github.com/Muxcore-Media/core/sdk/go/client v0.6.0/go.mod h1:Bgg5Z92kY48EPV8+Pmv3RbtVwgCPKD7EFvHGQhcmI64=
-github.com/Muxcore-Media/core/sdk/go/module v0.6.0 h1:yCQVyDVgTWyxXggYaCPkpS2BhPtE3QhWseOLosqFdAg=
-github.com/Muxcore-Media/core/sdk/go/module v0.6.0/go.mod h1:Sm2YC2uxsc54IYeWpNMCeVT78Egzlg8HQLwjQKLvzoM=
+github.com/Muxcore-Media/core/sdk/go/client v0.6.1 h1:P8UFaAWRUFQwqUFAAgsYuhvOo/Pl2OnelTTDSoBSKwc=
+github.com/Muxcore-Media/core/sdk/go/client v0.6.1/go.mod h1:Bgg5Z92kY48EPV8+Pmv3RbtVwgCPKD7EFvHGQhcmI64=
+github.com/Muxcore-Media/core/sdk/go/module v0.6.3 h1:ntrr/pqHVy68mKR1FiccxkI4AVlafvCSxP+Kfin7RtA=
+github.com/Muxcore-Media/core/sdk/go/module v0.6.3/go.mod h1:iKKRbT+FVGrn0RMWFOAvAzG6D8JqQJr//qZbkyaJUGQ=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
 github.com/cespare/xxhash/v2 v2.3.0/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/go-logr/logr v1.4.3 h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=

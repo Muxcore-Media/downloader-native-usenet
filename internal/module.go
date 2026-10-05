@@ -17,6 +17,7 @@ import (
 	"github.com/Muxcore-Media/core/pkg/contracts"
 	"github.com/Muxcore-Media/core/sdk/go/client"
 	modulesdk "github.com/Muxcore-Media/core/sdk/go/module"
+	manifest "github.com/Muxcore-Media/downloader-native-usenet"
 	"github.com/Muxcore-Media/downloader-native-usenet/internal/postproc"
 	usenetv1 "github.com/Muxcore-Media/downloader-native-usenet/proto/gen/muxcore/usenet/v1"
 )
@@ -155,7 +156,7 @@ func (m *Module) Info() contracts.ModuleInfo {
 	return contracts.ModuleInfo{
 		ID:           m.id,
 		Name:         "Native Usenet Downloader",
-		Version:      "0.2.0",
+		Version:      modulesdk.ManifestVersion(manifest.ManifestJSON),
 		Roles:        []string{"downloader", "usenet"},
 		Description:  "Native NZB/usenet engine with NNTP download and yEnc decode",
 		Capabilities: []string{"downloader", "downloader.usenet", "downloader.native.usenet", "usenet", "settings"},
