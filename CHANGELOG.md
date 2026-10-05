@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.4] - 2026-10-05
+
+
+### Security
+- gRPC server and peer dials use mesh TLS (meshtls, sdk/go/module v0.6.5) unless the dev insecure flag is set (ADR-0016/0017).
+
 ## [0.2.3] - 2026-10-05
 
 ### Changed
